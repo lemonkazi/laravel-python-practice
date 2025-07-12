@@ -1,11 +1,138 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<p align="center">
+  <a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
+  </a>
+</p>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <a href="https://github.com/laravel/framework/actions">
+    <img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status">
+  </a>
+  <a href="https://packagist.org/packages/laravel/framework">
+    <img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads">
+  </a>
+  <a href="https://packagist.org/packages/laravel/framework">
+    <img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version">
+  </a>
+  <a href="https://packagist.org/packages/laravel/framework">
+    <img src="https://img.shields.io/packagist/l/laravel/framework" alt="License">
+  </a>
 </p>
+
+# Laravel 12 with - Docker Setup
+
+This guide walks you through setting up your Laravel 12 application using Docker & Docker Compose.
+
+## Prerequisites
+Ensure you have the following installed on your system:
+- Docker (https://docs.docker.com/get-docker/)
+- Docker Compose (https://docs.docker.com/compose/install/)
+
+## Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/lemonkazi/laravel-12-practice.git
+cd laravel-12-practice
+```
+
+## Step 2: Set Up Environment Variables
+Create a .env file from .env.example and configure database settings:
+
+```bash
+cp .env.example .env
+```
+
+Update the .env file:
+
+```env
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=laravel_test
+DB_USERNAME=user
+DB_PASSWORD=secret
+
+```
+
+## Step 3: Build and Start Containers
+Run the following command to build and start the containers:
+
+```bash
+docker-compose up -d --build
+```
+
+This will spin up the following containers:
+- Laravel App (app)
+- MySQL Database (db)
+
+## Step 4: Install Dependencies
+Run Laravel's dependency installation inside the container:
+
+```bash
+docker-compose exec -it app composer install
+```
+
+
+Generate an application key:
+
+```bash
+docker-compose run --rm app php artisan key:generate
+```
+
+Run database migrations:
+
+```bash
+docker-compose exec -it app php artisan migrate --seed
+```
+
+## Step 5: Access the Application
+- Laravel API: http://localhost:5000
+- MySQL Database: localhost:3306 (Username: user, Password: secret)
+
+To check running containers:
+
+```bash
+docker ps
+```
+
+## Step 6: Stopping and Restarting Containers
+To stop the containers:
+
+```bash
+docker-compose down
+```
+
+To restart them:
+
+```bash
+docker-compose up -d
+```
+
+## Step 7: Running Tests
+You can run Laravel tests inside the container:
+
+```bash
+docker-compose exec -it app php artisan test
+```
+
+## Troubleshooting
+- If containers fail to start, check logs:
+  
+```bash
+  docker-compose logs app
+```
+- If database issues arise, try:
+  
+```bash
+  docker-compose exec -it app php artisan migrate:fresh --seed
+```
+
+You're all set! Start building your Laravel App!
 
 ## About Laravel
 
@@ -35,14 +162,19 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 
 ### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
+- **[Vehikl](https://vehikl.com/)**
 - **[Tighten Co.](https://tighten.co)**
+- **[WebReinvent](https://webreinvent.com/)**
 - **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
 - **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+- **[Cyber-Duck](https://cyber-duck.co.uk)**
 - **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
+- **[Jump24](https://jump24.co.uk)**
+- **[Redberry](https://redberry.international/laravel/)**
 - **[Active Logic](https://activelogic.com)**
+- **[byte5](https://byte5.de)**
+- **[OP.GG](https://op.gg)**
 
 ## Contributing
 

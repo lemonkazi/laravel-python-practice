@@ -1,18 +1,20 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Post;
-use App\Models\User;
 
 Route::get('/', function () {
     return view('welcome');
-    //Post::whereId(1)->delete();
-    // $arr = [1, 2, 3, 4];
-    // foreach ($arr as &$value) {
-    //     echo $value = $value * 2;
-    //     echo '<br>';
-    //     //$value *= 2;
-    // }
-    // foreach ($arr as $value) {}
-    echo '<pre>';print_r(['ss']);exit;
 });
+
+Route::get('/dashboard', [App\Http\Controllers\PostController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::resource('posts', App\Http\Controllers\PostController::class)->middleware(['auth', 'verified']);
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';

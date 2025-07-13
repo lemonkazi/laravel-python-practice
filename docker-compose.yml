@@ -29,13 +29,43 @@ services:
     networks:
       - practice
 
+#   node:
+#     image: node:20  # Use latest LTS version
+#     container_name: laravel_node
+#     working_dir: /var/www
+#     volumes:
+#       - .:/var/www
+#     command: tail -f /dev/null
+
   node:
-    image: node:20  # Use latest LTS version
+    image: node:22.12.0-alpine
     container_name: laravel_node
-    working_dir: /var/www
+    working_dir: /var/www/frontend
+    build:
+      context: .
+      dockerfile: ./docker/node/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     volumes:
-      - .:/var/www
-    command: tail -f /dev/null
+      - ./frontend:/var/www/frontend
+      - node_modules:/var/www/frontend/node_modules
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - app
+    networks:
+      - practice
+    # volumes:
+    #   - type: bind
+    #     source: ./frontend
+    #     target: /app
+    #     consistency: cached
+    #   - type: volume
+    #     source: node-module-volume
+    #     target: /app/node_modules
 
   #MySQL Service
   db:
@@ -61,32 +91,36 @@ services:
       - practice
     command: --character-set-server=utf8 --collation-server=utf8_unicode_ci
 
-  queue:
-    build:
-        context: .
-        dockerfile: Dockerfile
-    container_name: laravel_queue
-    restart: always
-    working_dir: /var/www
-    command: php artisan queue:work
-    volumes:
-        - .:/var/www
-    depends_on:
-        - db
-        - app
-    env_file:
-        - .env
+    #   queue:
+    #     build:
+    #         context: .
+    #         dockerfile: Dockerfile
+    #     container_name: laravel_queue
+    #     restart: always
+    #     working_dir: /var/www
+    #     command: php artisan queue:work
+    #     volumes:
+    #         - .:/var/www
+    #     depends_on:
+    #         - db
+    #         - app
+    #     env_file:
+    #         - .env
 
   nginx:
     image: nginx:latest
     container_name: laravel_nginx
     ports:
       - 5000:80
+      - 5001:81
     volumes:
       - ./:/var/www
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      #- ./docker/nginx/frontend.conf:/etc/nginx/conf.d/frontend.conf
+      #- ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - app
+      - node
     networks:
       - practice
 
@@ -114,20 +148,6 @@ services:
     networks:
       - practice
 
-  #   #Redis Service
-  #   redis:
-  #     image: redis:alpine
-  #     container_name: redis
-  #     restart: unless-stopped
-  #     tty: true
-  #     labels:
-  #       project: "laravel-practice"
-  #       environment: local
-  #       company: " Inc"
-  #     ports:
-  #       - 6379:6379
-  #     networks:
-  #       - practice
 
 #Docker Networks
 networks:
@@ -137,3 +157,4 @@ networks:
 volumes:
   dbdata:
     driver: local
+  node_modules:

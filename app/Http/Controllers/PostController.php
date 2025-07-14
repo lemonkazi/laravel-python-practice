@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\PostRepositoryInterface;
 use Illuminate\Http\Request;
 
 use App\Models\Post;
@@ -10,12 +11,18 @@ use App\Events\PostCreated;
 
 class PostController extends Controller
 {
+    protected $postRepository;
+
+    public function __construct(PostRepositoryInterface $postRepository)
+    {
+        $this->postRepository = $postRepository;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $posts = Post::latest()->paginate(10);
+        $posts = $this->postRepository->all();
         return view('posts.index', compact('posts'));
     }
 
@@ -38,14 +45,12 @@ class PostController extends Controller
             'is_published' => 'boolean',
         ]);
 
-        $post = new Post([
+        $post = $this->postRepository->create([
             'title' => $request->title,
             'content' => $request->content,
             'is_published' => $request->has('is_published'),
             'user_id' => auth()->id(),
         ]);
-
-        $post->save();
 
         //PostCreated::dispatch($post);
         event(new PostCreated($post));
@@ -80,7 +85,7 @@ class PostController extends Controller
             'is_published' => 'boolean',
         ]);
 
-        $post->update([
+        $this->postRepository->update($post->id, [
             'title' => $request->title,
             'content' => $request->content,
             'is_published' => $request->has('is_published'),
@@ -94,7 +99,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $post->delete();
+        $this->postRepository->delete($post->id);
 
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
     }

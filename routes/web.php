@@ -5,9 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Post;
 
 Route::get('/', function () {
-    Post::whereId(2)->delete();
-    echo '<pre>';print_r(['sss']);exit;
-    //return view('welcome');
+    //Post::whereId(2)->delete();
+    //echo '<pre>';print_r(['sss']);exit;
+    return view('welcome');
 
 });
 

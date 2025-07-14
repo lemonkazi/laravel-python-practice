@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\Events\EventInterface;
+use App\Contracts\Listeners\ListenerInterface;
 use Illuminate\Support\ServiceProvider;
 use App\Events\PostCreated;
 use App\Listeners\NotifyUser;
@@ -28,6 +30,19 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Post::observe(\App\Observers\PostObserver::class);
+    }
+
+    public function register()
+    {
+        $this->app->bind(
+            EventInterface::class,
+            PostCreated::class
+        );
+
+        $this->app->bind(
+            ListenerInterface::class,
+            NotifyAdmin::class
+        );
     }
 
     /**

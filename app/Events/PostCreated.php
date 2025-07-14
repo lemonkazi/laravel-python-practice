@@ -12,7 +12,9 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Models\Post;
 
-class PostCreated
+use App\Contracts\Events\EventInterface;
+
+class PostCreated implements EventInterface
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -24,6 +26,11 @@ class PostCreated
     public function __construct(Post $post)
     {
         $this->post = $post;
+    }
+
+    public function getPost(): Post
+    {
+        return $this->post;
     }
 
     /**

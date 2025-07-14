@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Models\Post;
 
+use App\Events\PostCreated;
+
 class PostController extends Controller
 {
     /**
@@ -44,6 +46,9 @@ class PostController extends Controller
         ]);
 
         $post->save();
+
+        //PostCreated::dispatch($post);
+        event(new PostCreated($post));
 
         return redirect()->route('posts.index')->with('success', 'Post created successfully.');
     }

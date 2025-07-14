@@ -60,6 +60,10 @@ services:
     networks:
       - practice
     command: --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   queue:
     build:
@@ -68,14 +72,18 @@ services:
     container_name: laravel_queue
     restart: always
     working_dir: /var/www
-    command: php artisan queue:work
+    command: sh -c "until php artisan migrate:status; do echo Waiting for database connection...; sleep 5; done && php artisan queue:work"
     volumes:
         - .:/var/www
     depends_on:
-        - db
-        - app
+      db:
+        condition: service_healthy
+      app:
+        condition: service_started
     env_file:
         - .env
+    networks:
+        - practice
 
   nginx:
     image: nginx:latest

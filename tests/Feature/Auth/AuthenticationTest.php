@@ -17,6 +17,8 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200);
     }
 
+    //docker-compose exec app ./vendor/bin/phpunit tests/Feature/Auth/AuthenticationTest.php --filter=test_users_can_authenticate_using_the_login_screen
+
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
         $user = User::factory()->create();
@@ -25,9 +27,8 @@ class AuthenticationTest extends TestCase
             'email' => $user->email,
             'password' => 'password',
         ]);
-
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('dashboard', false));
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

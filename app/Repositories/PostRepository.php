@@ -11,6 +11,11 @@ class PostRepository implements PostRepositoryInterface
         return Post::all();
     }
 
+    public function paginate($perPage = 10)
+    {
+        return Post::paginate($perPage);
+    }
+
     public function find($id)
     {
         return Post::find($id);

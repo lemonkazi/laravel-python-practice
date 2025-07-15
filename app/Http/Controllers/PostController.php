@@ -22,7 +22,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = $this->postRepository->all();
+        $posts = $this->postRepository->paginate(10);
         return view('posts.index', compact('posts'));
     }
 

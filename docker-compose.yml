@@ -1,5 +1,13 @@
 # Author: Mamun
 # All rights reserved. Copyright (c)
+# docker-compose exec -it app php artisan migrate:refresh --seed
+# docker-compose exec app php artisan --env=testing migrate:fresh --seed
+# docker-compose exec -it app php artisan optimize:clear
+# docker-compose exec app ./vendor/bin/phpunit tests/Feature/Auth/AuthenticationTest.php --filter=test_users_can_authenticate_using_the_login_screen
+# docker-compose exec app ./vendor/bin/phpunit
+# docker-compose exec app php artisan migrate:fresh --seed --env=testing
+
+
 version: '3.8'
 
 services:
@@ -55,6 +63,7 @@ services:
       MYSQL_USER: user
     volumes:
       - dbdata:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
     ports:
       - 33066:3306
     networks:
@@ -110,6 +119,7 @@ services:
       UPLOAD_LIMIT: 102400
       HIDE_PHP_VERSION: 1
       PMA_HOST: db
+      PMA_ARBITRARY: 1
       PMA_USER: root
       PMA_PASSWORD: secret
       MYSQL_ROOT_PASSWORD: secret

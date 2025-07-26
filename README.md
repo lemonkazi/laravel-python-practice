@@ -77,6 +77,14 @@ Run Laravel's dependency installation inside the container:
 docker-compose exec -it app composer install
 ```
 
+```bash
+npm install
+npm run build
+```
+
+```bash
+sudo chmod -R a+rw storage bootstrap/cache
+```
 
 Generate an application key:
 

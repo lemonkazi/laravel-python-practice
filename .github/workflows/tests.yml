@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - master
-      - '*.x'
   pull_request:
-  schedule:
-    - cron: '0 0 * * *'
+    branches:
+      - master
+    paths-ignore:
+      - 'README.md'
 
 permissions:
   contents: read
@@ -16,10 +17,23 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: laravel_test_db
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
     strategy:
       fail-fast: true
       matrix:
-        php: [8.2, 8.3, 8.4]
+        php: [8.2]
 
     name: PHP ${{ matrix.php }}
 
@@ -34,14 +48,40 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
       - name: Copy environment file
-        run: cp .env.example .env
+        run: cp .env.test .env
+
+      - name: Override database host for GitHub Actions
+        run: sed -i 's/DB_HOST=db/DB_HOST=127.0.0.1/' .env
 
       - name: Generate app key
         run: php artisan key:generate
 
+      - name: Run migrations and Seed database
+        env:
+          DB_HOST: 127.0.0.1
+          DB_USERNAME: root
+          DB_PASSWORD: ''
+        run: php artisan migrate:fresh --seed
+
       - name: Execute tests
-        run: php artisan test
+        env:
+          DB_HOST: 127.0.0.1
+          DB_USERNAME: root
+          DB_PASSWORD: ''
+        run: ./vendor/bin/phpunit

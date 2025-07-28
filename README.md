@@ -139,8 +139,23 @@ docker-compose exec -it app php artisan test
 ```bash
   docker-compose exec -it app php artisan migrate:fresh --seed
 ```
+```bash
+docker-compose exec app bash -c 'echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini'
+```
+# Restart container
+```bash
+docker-compose restart app
+```
+
+```bash
+docker-compose exec app ./vendor/bin/phpunit --coverage-html coverage
+```
+
 
 You're all set! Start building your Laravel App!
+
+# codecov
+[![codecov](https://codecov.io/gh/lemonkazi/practice/branch/master/graph/badge.svg)](https://codecov.io/gh/lemonkazi/practice)
 
 ## About Laravel
 

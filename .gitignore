@@ -28,3 +28,5 @@ Thumbs.db
 /frontend/.idea
 /frontend/.next
 /frontend/next-env.d.ts
+/coverage
+/coverage.xml

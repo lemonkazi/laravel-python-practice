@@ -132,6 +132,19 @@ services:
     networks:
       - practice
 
+  python:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    container_name: python_practice
+    restart: unless-stopped
+    working_dir: /usr/src/app
+    volumes:
+      - ./python:/usr/src/app
+    command: tail -f /dev/null
+    networks:
+      - practice
+
   #   #Redis Service
   #   redis:
   #     image: redis:alpine

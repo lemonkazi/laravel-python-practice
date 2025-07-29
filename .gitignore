@@ -30,3 +30,4 @@ Thumbs.db
 /frontend/next-env.d.ts
 /coverage
 /coverage.xml
+/python/log.txt

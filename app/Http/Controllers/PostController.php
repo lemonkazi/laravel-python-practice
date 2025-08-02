@@ -18,6 +18,13 @@ class PostController extends Controller
         $this->postRepository = $postRepository;
     }
     /**
+     * Approve a comment.
+     */
+    public function approveComment(Request $request, Comment $comment)
+    {
+        $this->commentRepository->approve($comment->id);
+        return redirect()->back()->with('success', 'Comment approved successfully.');
+    }
      * Display a listing of the resource.
      */
     public function index()

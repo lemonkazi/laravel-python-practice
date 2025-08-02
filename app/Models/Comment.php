@@ -24,6 +24,13 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function approve()
+    {
+        $this->is_approved = true;
+        $this->approved_at = now();
+        $this->save();
+    }
+
     public function scopeApproved($query)
     {
         return $query->where('is_approved', true)

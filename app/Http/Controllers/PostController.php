@@ -25,6 +25,7 @@ class PostController extends Controller
         $this->commentRepository->approve($comment->id);
         return redirect()->back()->with('success', 'Comment approved successfully.');
     }
+    /**
      * Display a listing of the resource.
      */
     public function index()

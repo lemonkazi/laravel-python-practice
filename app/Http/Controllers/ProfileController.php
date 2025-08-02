@@ -20,6 +20,7 @@ class ProfileController extends Controller
             'user' => $request->user(),
         ]);
     }
+    /**
      * Display the user's profile form.
      */
     public function edit(Request $request): View

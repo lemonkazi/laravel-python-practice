@@ -13,5 +13,5 @@ def main():
     # Test string operations
     words = ["hello", "world", "python"]
     print("Capitalized words:", capitalize_all(words))
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     main()

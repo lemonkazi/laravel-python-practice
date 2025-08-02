@@ -31,3 +31,7 @@ Thumbs.db
 /coverage
 /coverage.xml
 /python/log.txt
+/python/basic_code/log.txt
+/python/my_basic_project/log.txt
+/python/my_basic_project/__pycache__/
+/python/__pycache__/

@@ -24,7 +24,7 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function approve()
+    public function approve(): void
     {
         $this->is_approved = true;
         $this->approved_at = now();

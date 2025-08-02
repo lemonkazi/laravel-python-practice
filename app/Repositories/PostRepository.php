@@ -6,7 +6,7 @@ use App\Models\Post;
 
 class PostRepository implements PostRepositoryInterface
 {
-    public function all()
+    public function all(): Collection
     {
         return Post::all();
     }

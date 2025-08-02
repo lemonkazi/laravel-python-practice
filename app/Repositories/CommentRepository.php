@@ -19,4 +19,8 @@ class CommentRepository implements CommentRepositoryInterface
             $comment->save();
         }
     }
+    public function approved()
+    {
+        return Comment::approved()->get();
+    }
 }

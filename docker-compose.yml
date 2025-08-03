@@ -6,6 +6,8 @@
 # docker-compose exec app ./vendor/bin/phpunit tests/Feature/Auth/AuthenticationTest.php --filter=test_users_can_authenticate_using_the_login_screen
 # docker-compose exec app ./vendor/bin/phpunit
 # docker-compose exec app php artisan migrate:fresh --seed --env=testing
+# docker-compose exec python python my_basic_project/app.py
+# docker-compose exec python python -m pytest --cov=my_basic_project --cov-report=term-missing my_basic_project/tests/
 
 
 version: '3.8'
@@ -129,6 +131,19 @@ services:
       - db
     links:
       - db
+    networks:
+      - practice
+
+  python:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    container_name: python_practice
+    restart: unless-stopped
+    working_dir: /usr/src/app
+    volumes:
+      - ./python:/usr/src/app
+    command: sh -c "tail -f /dev/null && python my_basic_project/app.py && chmod -R 777 my_basic_project"
     networks:
       - practice
 

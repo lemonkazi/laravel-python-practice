@@ -29,4 +29,13 @@ Thumbs.db
 /frontend/.next
 /frontend/next-env.d.ts
 /coverage
+/coverage-html
 /coverage.xml
+/python/log.txt
+/python/basic_code/log.txt
+/python/my_basic_project/log.txt
+# Ignore all Python cache folders
+**/__pycache__/
+.aider*
+/python/result.json
+/python/todo_app/todo.json

@@ -6,6 +6,7 @@ use App\Repositories\PostRepositoryInterface;
 use Illuminate\Http\Request;
 
 use App\Models\Post;
+use App\Models\Comment;
 
 use App\Events\PostCreated;
 
@@ -16,6 +17,14 @@ class PostController extends Controller
     public function __construct(PostRepositoryInterface $postRepository)
     {
         $this->postRepository = $postRepository;
+    }
+    /**
+     * Approve a comment.
+     */
+    public function approveComment(Request $request, Comment $comment)
+    {
+        $this->commentRepository->approve($comment->id);
+        return redirect()->back()->with('success', 'Comment approved successfully.');
     }
     /**
      * Display a listing of the resource.

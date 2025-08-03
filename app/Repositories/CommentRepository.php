@@ -10,4 +10,17 @@ class CommentRepository implements CommentRepositoryInterface
     {
         return Comment::create($data);
     }
+    public function approve($id)
+    {
+        $comment = Comment::find($id);
+        if ($comment) {
+            $comment->is_approved = true;
+            $comment->approved_at = now();
+            $comment->save();
+        }
+    }
+    public function approved()
+    {
+        return Comment::approved()->get();
+    }
 }

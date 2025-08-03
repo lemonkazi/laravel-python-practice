@@ -141,7 +141,7 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./python:/usr/src/app
-    command: sh -c "tail -f /dev/null && python my_basic_project/app.py && chmod -R 777 my_basic_project/__pycache__ && chmod -R 777 my_basic_project/tests/__pycache__ && chmod -R 777 my_basic_project/utilities/__pycache__"
+    command: sh -c "tail -f /dev/null && python my_basic_project/app.py && chmod -R 777 my_basic_project"
     networks:
       - practice
 

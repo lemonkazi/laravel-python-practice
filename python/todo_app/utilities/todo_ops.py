@@ -1,5 +1,6 @@
 import json
 import os
+from colorama import Fore, Back, Style
 
 FILE = "todo_app/todo.json"  # Path to the JSON file where tasks are stored
 
@@ -20,10 +21,10 @@ def save_tasks(tasks):
 # Display all tasks
 def list_tasks(tasks):
     if not tasks:
-        print("📭 No tasks yet.")
+        print(Fore.CYAN + "📭 No tasks yet.")
         return
     for i, task in enumerate(tasks):
-        status = "✅" if task["done"] else "❌"
+        status = Fore.GREEN + "✓" if task["done"] else Fore.RED + "✗"
         print(f"{i + 1}. {status} {task['title']}")
 
 # Add a task
@@ -31,9 +32,9 @@ def add_task(tasks):
     title = input("Enter task title: ").strip()
     if title:
         tasks.append({"title": title, "done": False})
-        print("✅ Task added.")
+        print(Fore.GREEN + "✓ Task added.")
     else:
-        print("⚠️ Task title can't be empty.")
+        print(Fore.YELLOW + "⚠️ Task title can't be empty.")
 
 # Mark task as done
 def complete_task(tasks):
@@ -42,8 +43,8 @@ def complete_task(tasks):
         idx = int(input("Enter task number to mark as done: ")) - 1
         if 0 <= idx < len(tasks):
             tasks[idx]["done"] = True
-            print("✅ Task marked as completed.")
+            print(Fore.GREEN + "✓ Task marked as completed.")
         else:
-            print("⚠️ Invalid task number.")
+            print(Fore.YELLOW + "⚠️ Invalid task number.")
     except ValueError:
-        print("⚠️ Enter a valid number.")
+        print(Fore.YELLOW + "⚠️ Enter a valid number.")

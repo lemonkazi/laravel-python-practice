@@ -33,9 +33,8 @@ Thumbs.db
 /python/log.txt
 /python/basic_code/log.txt
 /python/my_basic_project/log.txt
-/python/my_basic_project/__pycache__
-/python/my_basic_project/tests/__pycache__
-/python/my_basic_project/utilities/__pycache__
-/python/__pycache__
+# Ignore all Python cache folders
+**/__pycache__/
 .aider*
 /python/result.json
+/python/todo_app/todo.json

@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
 from io import StringIO
+from colorama import Fore
 import app
 
 class TestApp(unittest.TestCase):
@@ -19,13 +20,13 @@ class TestApp(unittest.TestCase):
         self.assertIn("4. Exit", output)
 
         # Verify task addition flow
-        self.assertIn("✅ Task added.", output)
+        self.assertIn(Fore.GREEN + "✓ Task added.", output)
 
         # Verify task completion flow
-        self.assertIn("✅ Task marked as completed.", output)
+        self.assertIn(Fore.GREEN + "✓ Task marked as completed.", output)
 
         # Verify exit saving
-        self.assertIn("📝 Tasks saved. Goodbye!", output)
+        self.assertIn(Fore.GREEN + "📝 Tasks saved. Goodbye!", output)
 
 
 if __name__ == '__main__': # pragma: no cover

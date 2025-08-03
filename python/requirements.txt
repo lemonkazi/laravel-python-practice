@@ -1,4 +1,5 @@
 pytest==8.1.1
 pytest-cov
 requests
-requests
+pytest>=7.0
+pytest-cov>=4.0

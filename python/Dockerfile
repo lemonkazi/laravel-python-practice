@@ -6,9 +6,9 @@ WORKDIR /usr/src/app
 #COPY requirements.txt ./
 
 # Copy requirements.txt first (for better caching)
-COPY requirements-test.txt ./
+COPY requirements.txt ./
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements-test.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "app.py"]

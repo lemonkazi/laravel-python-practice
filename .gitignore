@@ -38,3 +38,4 @@ Thumbs.db
 /python/my_basic_project/utilities/__pycache__
 /python/__pycache__
 .aider*
+/python/result.json

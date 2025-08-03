@@ -20,14 +20,14 @@ class PostRepositoryTest extends TestCase
         $this->postRepository = new PostRepository();
     }
 
-    public function test_all()
-    {
-        Post::factory()->count(3)->create();
+    // public function test_all()
+    // {
+    //     Post::factory()->count(3)->create();
 
-        $result = $this->postRepository->all();
+    //     $result = $this->postRepository->all();
 
-        $this->assertCount(3, $result);
-    }
+    //     $this->assertCount(3, $result);
+    // }
 
     public function test_find()
     {

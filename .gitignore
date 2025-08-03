@@ -29,6 +29,7 @@ Thumbs.db
 /frontend/.next
 /frontend/next-env.d.ts
 /coverage
+/coverage-html
 /coverage.xml
 /python/log.txt
 /python/basic_code/log.txt

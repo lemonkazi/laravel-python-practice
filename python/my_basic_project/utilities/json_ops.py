@@ -35,3 +35,4 @@ def save_json_to_file(data, filename):
         print(f"Data saved to {filename}")
     except IOError as e:
         print(f"Error saving data to {filename}: {e}")
+        raise  # <--- Add this line!

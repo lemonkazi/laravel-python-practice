@@ -140,12 +140,27 @@ services:
       dockerfile: Dockerfile
     container_name: python_practice
     restart: unless-stopped
-    working_dir: /usr/src/app
+    working_dir: /usr/src/app/news_aggregator
     volumes:
-      - ./python:/usr/src/app
-    command: sh -c "tail -f /dev/null && python my_basic_project/app.py && chmod -R 777 my_basic_project"
+      - ./python/news_aggregator:/usr/src/app/news_aggregator
+    ports:
+      - "5001:5001"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 5001 --reload
     networks:
       - practice
+
+#   python:
+#     build:
+#       context: ./python
+#       dockerfile: Dockerfile
+#     container_name: python_practice
+#     restart: unless-stopped
+#     working_dir: /usr/src/app
+#     volumes:
+#       - ./python:/usr/src/app
+#     command: sh -c "tail -f /dev/null && python my_basic_project/app.py && chmod -R 777 my_basic_project"
+#     networks:
+#       - practice
 
   #   #Redis Service
   #   redis:

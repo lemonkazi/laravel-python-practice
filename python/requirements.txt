@@ -4,3 +4,12 @@ requests
 pytest>=7.0
 pytest-cov>=4.0
 colorama>=0.4.6
+
+fastapi
+uvicorn[standard]
+sqlalchemy
+alembic
+python-dotenv
+pydantic
+mysql-connector-python
+httpx

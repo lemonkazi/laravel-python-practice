@@ -143,6 +143,8 @@ services:
     working_dir: /usr/src/app/news_aggregator
     volumes:
       - ./python/news_aggregator:/usr/src/app/news_aggregator
+    env_file:
+      - ./python/news_aggregator/.env
     ports:
       - "5001:5001"
     command: uvicorn app.main:app --host 0.0.0.0 --port 5001 --reload

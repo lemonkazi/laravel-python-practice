@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
+from sqlalchemy.ext.declarative import declarative_base
+import os
 
 DATABASE_URL = (
     f"mysql+pymysql://{settings.MYSQL_USER}:{settings.MYSQL_PASSWORD}"

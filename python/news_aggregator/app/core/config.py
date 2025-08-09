@@ -23,29 +23,12 @@ class Settings(BaseSettings):
     MYSQL_DB: str = "laravel_test"
     MYSQL_HOST: str = "db"
     MYSQL_PORT: int = 3306
+    jwt_secret_key: str  # ✅ Add this field
 
     class Config:
         env_file = ".env"
+        extra = "ignore"  # ✅ Allow extra fields
 
 print("📦 Instantiating settings...")
 settings = Settings()
 print("✅ Settings loaded")
-
-# from pydantic import BaseSettings
-# from typing import List
-# from dotenv import load_dotenv
-
-
-# load_dotenv()  # Load variables from .env
-
-# class Settings(BaseSettings):
-#     app_name: str = "News Aggregator API"
-#     app_version: str = "1.0.0"
-#     app_host: str = "0.0.0.0"
-#     app_port: int = 5001
-#     allowed_origins: List[str] = []
-
-#     class Config:
-#         env_file = ".env"
-
-# settings = Settings()

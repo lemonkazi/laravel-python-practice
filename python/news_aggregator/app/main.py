@@ -6,10 +6,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .api import api_router
 from .core.config import settings
+from .core import logging_config  # <-- triggers logger setup
 import logging
 from fastapi.exceptions import RequestValidationError
 from .utils.exception_handlers import validation_exception_handler
-
+from app.api import test_db
 
 
 app = FastAPI(
@@ -43,7 +44,12 @@ app.add_middleware(
 
 # Include API routes
 app.include_router(api_router)
+app.include_router(test_db.router)
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the News Aggregator API"}
+    return {"message": "Welcome to the News Aggregator API - Reloaded"}
+
+@app.get("/health-check")
+def health_check():
+    return {"status": "ok"}

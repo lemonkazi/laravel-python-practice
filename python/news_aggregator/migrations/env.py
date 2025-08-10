@@ -32,6 +32,7 @@ from sqlalchemy import create_engine
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
 target_metadata = Base.metadata
+from app import models
 #target_metadata = None
 
 # other values from the config, defined by the needs of env.py,

@@ -10,9 +10,11 @@ uvicorn[standard]
 sqlalchemy
 alembic
 python-dotenv
-pydantic>=2.0
+pydantic[email]>=2.0
 pydantic-settings>=2.0
 mysql-connector-python
 httpx
 pymysql
+email-validator
+passlib
 

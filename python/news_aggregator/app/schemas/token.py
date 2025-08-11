@@ -7,3 +7,6 @@ class Token(BaseModel):
 
 class TokenWithUser(Token):
     user: UserOut
+
+class TokenRefreshResponse(BaseModel):
+    access_token: str

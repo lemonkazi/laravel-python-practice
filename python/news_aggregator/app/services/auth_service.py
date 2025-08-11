@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from app.dao.user_dao import get_user_by_email
+from app.dao.user_dao import UserDAO
 from app.utils.security import verify_password
 from app.utils.jwt import create_access_token, create_refresh_token
 from app.schemas.token import Token
@@ -10,7 +10,7 @@ from jose import JWTError, jwt
 from app.core.config import settings
 
 def authenticate_user(db: Session, email: str, password: str) -> tuple:
-    user = get_user_by_email(db, email)
+    user = UserDAO(db).get_by_email(email)
     if not user or not verify_password(password, user.password):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
 
@@ -46,7 +46,7 @@ def refresh_token(db: Session, token: str) -> str:
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-    user = get_user_by_email(db, email)
+    user = UserDAO(db).get_by_email(email)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 

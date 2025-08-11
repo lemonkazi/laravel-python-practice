@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from app.core.config import settings
-from app.dao.user_dao import get_user_by_email
+from app.dao.user_dao import UserDAO
 from app.db.deps import get_db
 from sqlalchemy.orm import Session
 
@@ -32,7 +32,7 @@ async def get_current_user(
                 detail="Invalid token"
             )
             
-        user = get_user_by_email(db, email)
+        user = UserDAO(db).get_by_email(email)
         if user is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

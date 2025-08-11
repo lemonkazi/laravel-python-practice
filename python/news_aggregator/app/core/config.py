@@ -1,9 +1,8 @@
 # app/core/config.py
-# from pydantic import BaseSettings
-from pydantic_settings import BaseSettings  # ✅ correct in Pydantic v2
-
+from pydantic_settings import BaseSettings
 from typing import List
 from dotenv import load_dotenv
+
 print("🔧 Loading environment variables...")
 load_dotenv()
 print("✅ .env loaded")
@@ -23,11 +22,16 @@ class Settings(BaseSettings):
     MYSQL_DB: str = "python_practice"
     MYSQL_HOST: str = "db"
     MYSQL_PORT: int = 3306
-    jwt_secret_key: str  # ✅ Add this field
+
+    jwt_access_secret_key: str
+    jwt_refresh_secret_key: str
+    jwt_access_token_expire_minutes: int = 15
+    jwt_refresh_token_expire_days: int = 7
+    jwt_algorithm: str = "HS256"
 
     class Config:
         env_file = ".env"
-        extra = "ignore"  # ✅ Allow extra fields
+        extra = "ignore"
 
 print("📦 Instantiating settings...")
 settings = Settings()

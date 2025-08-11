@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from app.db.base import Base
+from datetime import datetime, timedelta
 from sqlalchemy.sql import func
-
 
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
@@ -15,5 +15,12 @@ class RefreshToken(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    # Relationship
-    user = relationship("User", back_populates="refresh_tokens")
+    user = relationship("User")
+
+    @property
+    def is_expired(self) -> bool:
+        return datetime.utcnow() >= self.expires_at
+
+    @property
+    def is_revoked(self) -> bool:
+        return self.revoked_at is not None

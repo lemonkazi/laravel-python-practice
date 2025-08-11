@@ -16,3 +16,4 @@ mysql-connector-python
 httpx
 email-validator
 passlib
+python-jose[cryptography]

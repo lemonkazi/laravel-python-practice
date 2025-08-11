@@ -18,10 +18,39 @@ from app.api import test_db
 #     title="News Aggregator API",
 #     version="1.0.0"
 # )
+from fastapi.openapi.models import APIKey
+from fastapi.openapi.utils import get_openapi
+
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
 )
+
+# Add security scheme for Swagger
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+        
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        routes=app.routes,
+    )
+    
+    # Merge existing components with our security scheme
+    components = openapi_schema.setdefault("components", {})
+    components.setdefault("securitySchemes", {}).update({
+        "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    })
+    
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 

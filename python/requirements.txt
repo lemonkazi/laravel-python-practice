@@ -18,4 +18,7 @@ pymysql
 email-validator
 passlib
 python-jose[cryptography]
+gspread==6.1.2
+oauth2client==4.1.3
+streamlit
 

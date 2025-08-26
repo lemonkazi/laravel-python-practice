@@ -21,76 +21,103 @@ employee_names = ["Abdullah Al Mamun", "Md. Nazmul Hasan", "Md. Majharul Anwar"]
 today = datetime.today().strftime("%-m/%-d/%Y")  # e.g. 8/23/2025
 tz = pytz.timezone("Asia/Dhaka")
 
+# --- Refactored Function for Updating Attendance ---
+def update_attendance(employee: str, date_str: str, column_name: str, time_str: str) -> bool:
+    """
+    Updates the specified column (e.g., 'check-in' or 'check-out') for the given employee and date in the Google Sheet.
+
+    Args:
+        employee (str): The employee's name.
+        date_str (str): The date in format like '8/23/2025'.
+        column_name (str): The column header to update (e.g., 'check-in').
+        time_str (str): The time string to write.
+
+    Returns:
+        bool: True if updated successfully, False otherwise.
+    """
+    # Read all rows once
+    all_rows = sheet.get_all_values()  # includes headers
+    headers = [h.strip() for h in all_rows[6]]  # headers in row 7 (index 6)
+
+    # Convert headers to lower case for case-insensitive matching
+    headers_lower = [h.lower() for h in headers]
+
+    # Find column indices (1-based for sheet.update_cell)
+    try:
+        name_col = headers_lower.index("name") + 1
+        date_col = headers_lower.index("date") + 1
+        target_col = headers_lower.index(column_name.lower()) + 1
+    except ValueError:
+        st.error(f"⚠️ Column '{column_name}' not found in headers.")
+        return False
+
+    last_date = None
+    for idx, row in enumerate(all_rows[7:], start=8):  # data starts from row 8
+        row_name = (row[name_col - 1] or "").strip()
+        row_date_str = (row[date_col - 1] or "").strip()
+
+        if row_date_str:
+            last_date = row_date_str
+
+        if last_date == date_str and row_name == employee:
+            sheet.update_cell(idx, target_col, time_str)
+            return True
+
+    return False
+
 # --- Streamlit UI ---
 st.title("🕒 Employee Attendance")
-st.write(f"Today: **{today}**")
+
+clock_html = """
+    <div id="clock" style="color:white; text-align: center; font-size: 48px; font-weight: bold;"></div>
+    <div id="date" style="color:white; text-align: center; font-size: 30px; font-weight: bold;"></div>
+
+    <script>
+    function updateClock() {
+        const now = new Date();
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Dhaka',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+        document.getElementById('clock').innerHTML = formatter.format(now);
+        const dateFormatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Dhaka',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        document.getElementById('date').innerHTML = dateFormatter.format(now);
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+    </script>
+    """
+
+st.components.v1.html(clock_html, height=100)
 
 selected_employee = st.selectbox("Select Employee", employee_names)
 
-col1, col2 = st.columns(2)
+# ... existing code ...
+# Create three columns: left for check-in, middle for clock, right for check-out
+col1, col3 = st.columns([1,1])  # Middle column wider for the clock
+
+
 
 with col1:
     if st.button("Check-in"):
         check_in_time = datetime.now(tz).strftime("%I:%M %p")
-        # --- Read all rows ---
-        all_rows = sheet.get_all_values()  # includes headers
-        headers = [h.strip() for h in all_rows[6]]  # remove spaces
-
-        # Convert headers to lower case for safer matching
-        headers_lower = [h.lower() for h in headers]
-        
-        # Map your expected headers
-        name_col = headers_lower.index("name") + 1
-        date_col = headers_lower.index("date") + 1
-        checkin_col = headers_lower.index("check-in") + 1
-
-        last_date = None
-        updated = False
-        for idx, row in enumerate(all_rows[7:], start=8):  # sheet rows start after header
-            row_name = (row[name_col - 1] or "").strip()
-            row_date_str = (row[date_col - 1] or "").strip()
-
-            if row_date_str:
-                last_date = row_date_str
-
-            if last_date == today and row_name == selected_employee:
-                sheet.update_cell(idx, checkin_col, check_in_time)
-                st.success(f"✅ {selected_employee} checked-in at {check_in_time}")
-                updated = True
-                break
-        
-        if not updated:
+        if update_attendance(selected_employee, today, "check-in", check_in_time):
+            st.success(f"✅ {selected_employee} checked-in at {check_in_time}")
+        else:
             st.error("⚠️ No matching row found for today's date & employee.")
 
-with col2:
+with col3:
     if st.button("Checkout"):
         check_out_time = datetime.now(tz).strftime("%I:%M %p")
-        # --- Read all rows ---
-        all_rows = sheet.get_all_values()  # includes headers
-        headers = [h.strip() for h in all_rows[6]]  # remove spaces
-
-        # Convert headers to lower case for safer matching
-        headers_lower = [h.lower() for h in headers]
-        
-        # Map your expected headers
-        name_col = headers_lower.index("name") + 1
-        date_col = headers_lower.index("date") + 1
-        checkout_col = headers_lower.index("check-out") + 1
-
-        last_date = None
-        updated = False
-        for idx, row in enumerate(all_rows[7:], start=8):  # sheet rows start after header
-            row_name = (row[name_col - 1] or "").strip()
-            row_date_str = (row[date_col - 1] or "").strip()
-
-            if row_date_str:
-                last_date = row_date_str
-
-            if last_date == today and row_name == selected_employee:
-                sheet.update_cell(idx, checkout_col, check_out_time)
-                st.success(f"✅ {selected_employee} checked-out at {check_out_time}")
-                updated = True
-                break
-        
-        if not updated:
+        if update_attendance(selected_employee, today, "check-out", check_out_time):
+            st.success(f"✅ {selected_employee} checked-out at {check_out_time}")
+        else:
             st.error("⚠️ No matching row found for today's date & employee.")

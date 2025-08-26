@@ -47,8 +47,13 @@ def update_attendance(employee: str, date_str: str, column_name: str, time_str: 
         name_col = headers_lower.index("name") + 1
         date_col = headers_lower.index("date") + 1
         target_col = headers_lower.index(column_name.lower()) + 1
-    except ValueError:
-        st.error(f"⚠️ Column '{column_name}' not found in headers.")
+        checkin_col = headers_lower.index("check-in") + 1
+        checkout_col = headers_lower.index("check-out") + 1
+        hours_logged_col = headers_lower.index("hours logged") + 1
+        over_time_col = headers_lower.index("over time") + 1
+        attendance_status_col = headers_lower.index("attendance status") + 1
+    except ValueError as e:
+        st.error(f"⚠️ Column not found in headers. {e}")
         return False
 
     last_date = None
@@ -61,6 +66,28 @@ def update_attendance(employee: str, date_str: str, column_name: str, time_str: 
 
         if last_date == date_str and row_name == employee:
             sheet.update_cell(idx, target_col, time_str)
+
+            # If updating 'check-out', calculate and update other columns
+            if column_name.lower() == "check-out":
+                checkin_time_str = row[checkin_col - 1]
+                if checkin_time_str:
+                    try:
+                        # Parse time strings and calculate time difference
+                        checkin_time = datetime.strptime(checkin_time_str, "%I:%M %p")
+                        checkout_time = datetime.strptime(time_str, "%I:%M %p")
+                        hours_logged = (checkout_time - checkin_time).total_seconds() / 3600
+                        over_time = hours_logged - 8.0
+
+                        # Update 'Hours Logged', 'Over Time', and 'Attendance Status' columns
+                        sheet.update_cell(idx, hours_logged_col, str(round(hours_logged, 2)))
+                        sheet.update_cell(idx, over_time_col, str(round(over_time, 2)))
+                        sheet.update_cell(idx, attendance_status_col, "Present")
+                    except ValueError:
+                        st.error(f"⚠️ Could not parse check-in or check-out time for {employee} on {date_str}.")
+                        return False
+                else:
+                    st.warning(f"⚠️ Check-in time not found for {employee} on {date_str}.")
+
             return True
 
     return False

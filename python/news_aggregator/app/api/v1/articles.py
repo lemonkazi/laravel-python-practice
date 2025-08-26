@@ -1,0 +1,1 @@
+from app.api.v1.handlers.article_handler import articles_router
